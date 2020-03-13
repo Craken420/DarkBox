@@ -1,0 +1,6 @@
+Reacomodo:
+
+
+[Campana.tbl/UEN]
+ValorPorOmision=Sucursal.wUEN
+CondicionEdicion=Falso

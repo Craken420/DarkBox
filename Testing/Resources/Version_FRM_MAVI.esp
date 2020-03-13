@@ -1,0 +1,32 @@
+[Version.frm/Acciones.PerfilDBMail]
+Nombre=Se encontraba en ActivoFCat
+Boton=84
+NombreDesplegar=&Perfil DBMail
+EnBarraHerramientas=S
+EspacioPrevio=S
+Activo=S
+Visible=S
+GuardarAntes=S
+TipoAccion=Formas
+ClaveAccion=Se encontraba en ActivoFCat
+AngelosCamp=HeyHeyHey
+
+[Version1.frm/Acciones.PerfilDBMail]
+Nombre=ola
+
+
+[Version2.frm/Acciones.PerfilDBMail]
+Nombre=PerfilDBMail
+Boton=84
+NombreDesplegar=&Perfil DBMail
+
+[Version2.frm/Acciones.PerfilDBMail]
+ClaveAccion=Se encontraba en ActivoFCat
+ClaveAccion=Se encontraba en ActivoFCat
+ClaveAccion=Se encontraba en ActivoFCat
+
+[Version3.frm/Acciones.PerfilDBMail]
+ClaveAccion=Se encontraba en ActivoFCat
+ClaveAccion=Se encontraba en ActivoFCat
+ClaveAccion=Se encontraba en ActivoFCat
+ 

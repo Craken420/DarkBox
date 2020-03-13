@@ -1,0 +1,11 @@
+
+[VerMovTiempo.frm/Lista.VerMovTiempo.Usuario]
+Carpeta=Lista
+Clave=VerMovTiempo.Usuario
+Editar=S
+LineaNueva=S
+ValidaNombre=S
+3D=S
+Tamano=10
+ColorFondo=Blanco
+ColorFuente=Negro

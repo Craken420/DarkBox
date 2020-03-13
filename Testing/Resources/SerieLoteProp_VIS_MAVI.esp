@@ -1,0 +1,14 @@
+Reacomodo:
+
+
+[SerieLoteProp.vis/Vista]
+ListaCampos.Cambios=Insertar<TAB>SerieLoteProp.Nomotor<TAB>37
+SQL.Cambios=Insertar<TAB>  SerieLoteProp.Nomotor,<TAB>38
+
+[SerieLoteProp.vis/SerieLoteProp.Nomotor]
+Clave=SerieLoteProp.Nomotor
+Visible=S
+LigaTabla=SerieLoteProp
+LigaCampo=Nomotor
+Ligado=S
+ClaveBDE=Nomotor

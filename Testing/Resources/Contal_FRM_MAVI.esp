@@ -1,0 +1,7 @@
+[Cont.frm/Acciones.DesAfectar]
+ActivoCondicion=Cont:Cont
+
+[Cont.frm/Acciones.DesafectarLote]
+Expresion=esxcis
+
+

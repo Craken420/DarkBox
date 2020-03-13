@@ -1,0 +1,14 @@
+Reacomodo:
+
+
+[SerieLoteProp.tbl/Tabla]
+ListaCampos.Cambios=Insertar<TAB>Nomotor<TAB>37
+SQL.Cambios=Insertar<TAB>  Nomotor<TAB>38
+
+[SerieLoteProp.tbl/Nomotor]
+Clave=Nomotor
+Nombre=Nomotor
+Visible=S
+TamanoValidacion=20
+Tamano=20
+Mayusculas=S

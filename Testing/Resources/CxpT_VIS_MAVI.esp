@@ -1,0 +1,5 @@
+Reacomodo:
+
+
+[CxpT.vis/FechaPoliza]
+;FormulaSQL={Si(General.ContXCancelarMismoMes, 'CASE WHEN GastoT.GenerarDinero 

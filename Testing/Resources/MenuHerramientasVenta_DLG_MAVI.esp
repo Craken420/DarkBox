@@ -1,0 +1,20 @@
+Reacomodo:
+
+
+[MenuHerramientasVenta.dlg/Dialogo]
+ListaAcciones=ProcesarVenta<BR>ProcesarVentaD<BR>ProcesarVentaEspacios<BR>VentaDesreservarOrdenes<BR>PedidoAuto<BR>ReasignarAgente<BR>ISAN<BR>ImportarVentas<BR>RecostearMovimientos<BR>ArtFamQuiebre<BR>FEAGenerar<BR>FEAReporteMensual<BR>PresupuestoAuto<BR>ImprimirCFD
+
+[MenuHerramientasVenta.dlg/Acciones.ImprimirCFD]
+Nombre=ImprimirCFD
+Boton=0
+NombreDesplegar=Imprimir CFD
+EnMenu=S
+TipoAccion=Formas
+ClaveAccion=VentaCFDI
+Activo=S
+ConCondicion=S
+VisibleCondicion=Empresa.CFD
+NombreEnBoton=S
+RefrescarDespues=S
+EspacioPrevio=S
+EjecucionCondicion=Empresa.CFD

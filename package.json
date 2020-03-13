@@ -1,0 +1,30 @@
+{
+  "name": "mytools",
+  "version": "1.0.0",
+  "description": "\"General Purpose Functional Tools\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Js",
+    "Javascript",
+    "NodeJs",
+    "Node",
+    "SQL Server",
+    "SQL",
+    "RegExp",
+    "Regular Expressions",
+    "Expresiones regulares"
+  ],
+  "author": "Luis Angel Peña Zuñiga",
+  "license": "ISC",
+  "dependencies": {
+    "chardet": "^0.8.0",
+    "fs": "0.0.1-security",
+    "iconv-lite": "^0.5.1",
+    "path": "^0.12.7",
+    "ramda": "^0.27.0",
+    "xlsx": "^0.15.5"
+  }
+}
