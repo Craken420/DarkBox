@@ -19,4 +19,4 @@ Liberia funcional de uso General
 
 4.- Usar
 
-    const DrkBx = require('./drkBx.js')
+    const { DrkBx } = require('./drkBx.js')
