@@ -4,7 +4,7 @@
   "description": "\"General Purpose Functional Tools\"",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest"
   },
   "keywords": [
     "Js",
@@ -18,7 +18,7 @@
     "Expresiones regulares"
   ],
   "author": "Luis Angel Peña Zuñiga",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "chardet": "^0.8.0",
     "fs": "0.0.1-security",
@@ -26,5 +26,13 @@
     "path": "^0.12.7",
     "ramda": "^0.27.0",
     "xlsx": "^0.15.5"
+  },
+  "presets": [
+    "@babel/preset-env"
+  ],
+  "devDependencies": {
+    "@babel/preset-env": "^7.27.2",
+    "jest": "^29.7.0",
+    "vitest": "^3.1.3"
   }
 }
