@@ -1,8 +1,0 @@
-[Cont.frm/Acciones.DesAfectar]
-ActivoCondicion=Cont:Cont.Estatus
-
-[Cont.frm/Acciones.DesafectarLote]
-Expresion=Si<BR>  (ContA:Cont.Estatus
-
-[Cont.frm/Acciones.Eliminar]
-;ActivoCondicion=PuedeAfectar(Usuario.Cancelar, Usuario.CancelarOtrosMovs, Cont:Cont.Usuario) y ConDatos(Cont:Cont.ID) y (ConDatos(Cont:Cont.MovID) o (Cont:Cont.Estatus

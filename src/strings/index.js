@@ -1,10 +1,63 @@
 /**
+ * @file string/index.js
  * @fileoverview Text comparison utilities for detecting word-level similarities and differences.
  * Ideal for linguistic analysis, version tracking, or text validation in JavaScript applications.
  * 
  * @module string
  */
 
+/**
+ * Converts a string to camelCase.
+ * @param {string} str - The string to convert.
+ * @returns {string} The camelCased string.
+ */
+const camelCase = (str) => {
+  return str
+    .split(WORD_SPLIT_REGEX)
+    .filter(Boolean)
+    .map((word, index) =>
+      index === 0
+        ? word.toLowerCase()
+        : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    )
+    .join('');
+}
+
+/**
+ * Capitalizes the first character of a string.
+ * @param {string} str - The string to capitalize.
+ * @returns {string} A new string with the first letter capitalized.
+ */
+const capitalize = (str) => {
+  if (typeof str !== 'string') {
+    throw new TypeError('Expected a string');
+  }
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+* Finds word groups of a specific length in `text1` that are not found in `text2`.
+*
+* @param {string} text1 - The base text to extract patterns from.
+* @param {string} text2 - The reference text to search for matches.
+* @param {number} length - The number of consecutive words to compare per group.
+* @returns {string[]} An array of word fragments from `text1` not found in `text2`.
+*/
+const checkDifferencesByLength = (text1, text2, length) => {
+  const words1 = text1.trim().split(/\s+/);
+  if (words1.length < length) return [];
+
+  const differences = [];
+
+  for (let i = 0; i + length <= words1.length; i++) {
+    const fragment = words1.slice(i, i + length).join(' ');
+    if (!text2.includes(fragment)) {
+      differences.push(fragment);
+    }
+  }
+
+  return differences;
+};
 
 /**
  * Recursively compares two strings at the word level, returning matches and unique segments.
@@ -62,40 +115,46 @@ const compareTextByPhraseSimilarity = (text1, text2) => {
 };
 
 /**
-* Finds word groups of a specific length in `text1` that are not found in `text2`.
-*
-* @param {string} text1 - The base text to extract patterns from.
-* @param {string} text2 - The reference text to search for matches.
-* @param {number} length - The number of consecutive words to compare per group.
-* @returns {string[]} An array of word fragments from `text1` not found in `text2`.
-*/
-const checkDifferencesByLength = (text1, text2, length) => {
- const words1 = text1.trim().split(/\s+/);
- if (words1.length < length) return [];
-
- const differences = [];
-
- for (let i = 0; i + length <= words1.length; i++) {
-   const fragment = words1.slice(i, i + length).join(' ');
-   if (!text2.includes(fragment)) {
-     differences.push(fragment);
-   }
- }
-
- return differences;
-};
-
-/**
- * Capitalizes the first character of a string.
- * @param {string} str - The string to capitalize.
- * @returns {string} A new string with the first letter capitalized.
+ * Returns the trailing difference between two strings.
+ * Assumes one is a subsequence of the other and extracts the non-matching suffix.
+ *
+ * @param {string} strA - One of the strings to compare.
+ * @param {string} strB - The other string to compare.
+ * @returns {string} The non-matching trailing portion of the longer string.
  */
-const capitalize = (str) => {
-  if (typeof str !== 'string') {
-    throw new TypeError('Expected a string');
-  }
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+const getTrailingStringDifference = (strA, strB) => {
+  /**
+   * Extracts the non-matching suffix from the extended string,
+   * based on character sequence comparison with the base string.
+   *
+   * @param {string} base - The shorter or matching base string.
+   * @param {string} extended - The longer string to extract from.
+   * @returns {string} The suffix of `extended` not present in `base`.
+   */
+  const extractSuffix = (base, extended) => {
+    const baseChars = base.split('');
+    const extendedChars = extended.split('');
+    let index = 0;
+
+    for (const char of baseChars) {
+      if (extendedChars[index] === char) {
+        extendedChars.splice(index, 1);
+      } else {
+        index += 1;
+      }
+    }
+
+    if (index > 0) {
+      extendedChars.splice(index);
+    }
+
+    return extendedChars.join('');
+  };
+
+  return strA.length < strB.length
+    ? extractSuffix(strA, strB)
+    : extractSuffix(strB, strA);
+};
 
 /**
  * Converts a string to kebab-case (lowercase words separated by hyphens).
@@ -110,54 +169,11 @@ const kebabCase = (str) => {
     .join('-');
 }
 
-/**
- * Converts a string to camelCase.
- * @param {string} str - The string to convert.
- * @returns {string} The camelCased string.
- */
-const camelCase = (str) => {
-  return str
-    .split(WORD_SPLIT_REGEX)
-    .filter(Boolean)
-    .map((word, index) =>
-      index === 0
-        ? word.toLowerCase()
-        : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-    )
-    .join('');
-}
-
-const getTrailingStringDifference = (shorter, longer) => {
-  const extractNonMatchingSuffix = function(base, extended) {
-    const baseChars = base.split('');
-    const extendedChars = extended.split('');
-    let index = 0;
-
-    baseChars.forEach((char) => {
-      if (extendedChars[index] === char) {
-        extendedChars.splice(index, 1);
-      } else {
-        index += 1;
-      }
-    });
-
-    if (index > 0) {
-      extendedChars.splice(index, extendedChars.length);
-    }
-
-    return extendedChars.join('');
-  };
-
-  return shorter.length < longer.length
-    ? extractNonMatchingSuffix(shorter, longer)
-    : extractNonMatchingSuffix(longer, shorter);
-}
-
-module.exports = {
-  compareTextByPhraseSimilarity,
-  checkDifferencesByLength,
-  capitalize,
-  kebabCase,
+export {
   camelCase,
-  getTrailingStringDifference
+  capitalize,
+  checkDifferencesByLength,
+  compareTextByPhraseSimilarity,
+  getTrailingStringDifference,
+  kebabCase
 };

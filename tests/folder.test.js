@@ -1,74 +1,122 @@
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { promises as fs } from 'fs';
+import { createFolder, existsAndIsDirectory, getFiles, getFilesExcluding, getFilteredFiles, getFilteredFilesExcluding, isDirectory, listFiles, resolveFilePath, resolveFilePaths } from './folder/index';
+import fs from 'fs';
 import path from 'path';
 
-import * as folders from '../src/fs/folders'; // ajusta esta ruta según tu estructura real
-
-const TEST_DIR = path.resolve('__tests__/test-folder');
-const SUB_DIR = path.join(TEST_DIR, 'subdir');
-const FILES = ['test1.txt', 'test2.js'];
+// Mocking the fs module to simulate file system operations
+jest.mock('fs', () => ({
+  ...jest.requireActual('fs'),
+  mkdir: jest.fn(),
+  readdirSync: jest.fn(),
+  statSync: jest.fn(),
+  existsSync: jest.fn(),
+}));
 
 describe('Folder Utilities', () => {
-  beforeAll(async () => {
-    await folders.createFolder(TEST_DIR);
-    await folders.createFolder(SUB_DIR);
-    await Promise.all(FILES.map(file => fs.writeFile(path.join(TEST_DIR, file), 'hello')));
+  describe('createFolder', () => {
+    it('should create the folder if it does not exist', async () => {
+      fs.existsSync.mockReturnValue(false); // Simulate that the folder does not exist
+      await createFolder('/path/to/dir');
+      expect(fs.mkdir).toHaveBeenCalledWith('/path/to/dir', { recursive: true });
+    });
+
+    it('should do nothing if the folder exists', async () => {
+      fs.existsSync.mockReturnValue(true); // Simulate that the folder exists
+      await createFolder('/path/to/dir');
+      expect(fs.mkdir).not.toHaveBeenCalled();
+    });
   });
 
-  afterAll(async () => {
-    await fs.rm(TEST_DIR, { recursive: true, force: true });
+  describe('existsAndIsDirectory', () => {
+    it('should return true if the path exists and is a directory', () => {
+      fs.existsSync.mockReturnValue(true);
+      fs.statSync.mockReturnValue({ isDirectory: () => true });
+      expect(existsAndIsDirectory('/path/to/dir')).toBe(true);
+    });
+
+    it('should return false if the path does not exist', () => {
+      fs.existsSync.mockReturnValue(false);
+      expect(existsAndIsDirectory('/path/to/dir')).toBe(false);
+    });
+
+    it('should return false if the path exists but is not a directory', () => {
+      fs.existsSync.mockReturnValue(true);
+      fs.statSync.mockReturnValue({ isDirectory: () => false });
+      expect(existsAndIsDirectory('/path/to/dir')).toBe(false);
+    });
   });
 
-  it('createFolder creates a folder', async () => {
-    const newDir = path.join(TEST_DIR, 'new-folder');
-    await folders.createFolder(newDir);
-    const stat = await fs.stat(newDir);
-    expect(stat.isDirectory()).toBe(true);
+  describe('getFiles', () => {
+    it('should return an array of file paths', () => {
+      fs.readdirSync.mockReturnValue(['file1.txt', 'file2.txt']);
+      fs.statSync.mockReturnValue({ isFile: () => true });
+      expect(getFiles('/path/to/dir')).toEqual(['/path/to/dir/file1.txt', '/path/to/dir/file2.txt']);
+    });
   });
 
-  it('listFiles lists only files', async () => {
-    const listed = await folders.listFiles(TEST_DIR);
-    expect(listed.sort()).toEqual(FILES.sort());
+  describe('getFilesExcluding', () => {
+    it('should exclude specified file names', () => {
+      fs.readdirSync.mockReturnValue(['file1.txt', 'file2.txt', 'file3.txt']);
+      fs.statSync.mockReturnValue({ isFile: () => true });
+      const files = getFilesExcluding('/path/to/dir', ['file2.txt']);
+      expect(files).toEqual(['/path/to/dir/file1.txt', '/path/to/dir/file3.txt']);
+    });
   });
 
-  it('isDirectory returns true for directories', () => {
-    expect(folders.isDirectory(TEST_DIR)).toBe(true);
+  describe('getFilteredFiles', () => {
+    it('should return files with specified extensions', () => {
+      fs.readdirSync.mockReturnValue(['file1.txt', 'file2.js', 'file3.txt']);
+      fs.statSync.mockReturnValue({ isFile: () => true });
+      const files = getFilteredFiles(['.txt'], '/path/to/dir');
+      expect(files).toEqual(['/path/to/dir/file1.txt', '/path/to/dir/file3.txt']);
+    });
   });
 
-  it('existsAndIsDirectory returns true for existing directories', () => {
-    expect(folders.existsAndIsDirectory(TEST_DIR)).toBe(true);
+  describe('getFilteredFilesExcluding', () => {
+    it('should return files with specified extensions and exclude certain files', () => {
+      fs.readdirSync.mockReturnValue(['file1.txt', 'file2.js', 'file3.txt']);
+      fs.statSync.mockReturnValue({ isFile: () => true });
+      const files = getFilteredFilesExcluding('/path/to/dir', ['.txt'], ['file3.txt']);
+      expect(files).toEqual(['/path/to/dir/file1.txt']);
+    });
   });
 
-  it('resolveFilePath resolves correct full path', () => {
-    const result = folders.resolveFilePath(TEST_DIR, 'file.txt');
-    expect(result).toBe(path.resolve(TEST_DIR, 'file.txt'));
+  describe('isDirectory', () => {
+    it('should return true if the path is a directory', () => {
+      fs.statSync.mockReturnValue({ isDirectory: () => true });
+      expect(isDirectory('/path/to/dir')).toBe(true);
+    });
+
+    it('should return false if the path is not a directory', () => {
+      fs.statSync.mockReturnValue({ isDirectory: () => false });
+      expect(isDirectory('/path/to/dir')).toBe(false);
+    });
   });
 
-  it('resolveFilePaths resolves multiple paths', () => {
-    const resolved = folders.resolveFilePaths(TEST_DIR, FILES);
-    expect(resolved).toEqual(FILES.map(f => path.resolve(TEST_DIR, f)));
+  describe('listFiles', () => {
+    it('should list files in a directory', async () => {
+      fs.readdir.mockResolvedValue([
+        { isFile: () => true, name: 'file1.txt' },
+        { isFile: () => true, name: 'file2.txt' },
+        { isFile: () => false, name: 'folder1' },
+      ]);
+      const files = await listFiles('/path/to/dir');
+      expect(files).toEqual(['file1.txt', 'file2.txt']);
+    });
   });
 
-  it('getFiles returns full file paths', () => {
-    const files = folders.getFiles(TEST_DIR);
-    const expected = FILES.map(f => path.resolve(TEST_DIR, f));
-    expect(files.sort()).toEqual(expected.sort());
+  describe('resolveFilePath', () => {
+    it('should resolve the file path correctly', () => {
+      expect(resolveFilePath('/path/to/dir', 'file1.txt')).toBe(path.resolve('/path/to/dir', 'file1.txt'));
+    });
   });
 
-  it('getFilteredFiles filters files by extension', () => {
-    const result = folders.getFilteredFiles(['.js'], TEST_DIR);
-    const expected = [path.resolve(TEST_DIR, 'test2.js')];
-    expect(result).toEqual(expected);
-  });
-
-  it('getFilteredFilesExcluding filters and excludes files', () => {
-    const result = folders.getFilteredFilesExcluding(TEST_DIR, ['.txt', '.js'], [path.resolve(TEST_DIR, 'test1.txt')]);
-    expect(result).toEqual([path.resolve(TEST_DIR, 'test2.js')]);
-  });
-
-  it('getFilesExcluding excludes specific files', () => {
-    const allFiles = folders.getFiles(TEST_DIR);
-    const result = folders.getFilesExcluding(TEST_DIR, [path.resolve(TEST_DIR, 'test2.js')]);
-    expect(result).toEqual([path.resolve(TEST_DIR, 'test1.txt')]);
+  describe('resolveFilePaths', () => {
+    it('should resolve multiple file paths correctly', () => {
+      const files = ['file1.txt', 'file2.txt'];
+      expect(resolveFilePaths('/path/to/dir', files)).toEqual([
+        path.resolve('/path/to/dir', 'file1.txt'),
+        path.resolve('/path/to/dir', 'file2.txt'),
+      ]);
+    });
   });
 });

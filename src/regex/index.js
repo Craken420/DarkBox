@@ -1,19 +1,19 @@
 /**
- * @fileoverview Regular expression utilities and patterns.
- * Provides reusable regex snippets and helper functions for matching,
- * validating, and extracting patterns from strings.
- * Useful for parsing, input validation, and text processing tasks.
- * 
- * @module regex
+ * @file regex/index.js
+ * @fileoverview Main entry point for the regex module.
+ * Exports all utility modules: patterns, etc.
  */
 
-module.exports = {
-    // Regular expression to remove comments (single-line and multi-line) from a function
-    stripComments: /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
-    
-    // Regular expression to get the parameter names
-    argumentNames: /([^\s,]+)/g,
+import * as adapter from './adapter';
+import * as cls from './cls';
+import * as make from './make';
+import * as match from './match';
+import * as patterns from './patterns';
 
-    //Regular expression matching one or more non-alphanumeric characters.
-    wordSplit: /[^a-zA-Z0-9]+/
+export {
+    adapter,
+    cls,
+    make,
+    match,
+    patterns
 };

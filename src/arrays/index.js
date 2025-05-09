@@ -1,9 +1,29 @@
 /**
+ * @file array/index.js
  * @fileoverview Utility functions for working with arrays.
  * Includes tools for comparing, filtering, finding differences, and analyzing array contents.
  * 
  * @module arrays
  */
+
+import * as R from 'ramda';
+
+/**
+ * Splits an array into chunks of a given size.
+ * @param {Array} array - The array to split.
+ * @param {number} size - The maximum size of each chunk.
+ * @returns {Array[]} An array of chunks (sub-arrays).
+ */
+const chunk = (array, size) => {
+  if (size <= 0) {
+    throw new Error('Size must be a positive number.');
+  }
+  const chunks = [];
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size));
+  }
+  return chunks;
+}
 
 /**
  * Returns the symmetric difference between two arrays.
@@ -37,28 +57,29 @@ const diff = (arr1, arr2) => {
 }
 
 /**
- * Returns a new array containing only the unique values from the input array.
- * @param {Array} array - The array to filter for unique values.
- * @returns {Array} A new array with duplicates removed.
+ * Checks whether an object contains at least one array.
+ *
+ * @param {Object} objEntry - The object to inspect.
+ * @returns {boolean}
  */
-const unique = (array) => Array.from(new Set(array));
+const hasArray = objEntry => {
+    let obj = R.clone(objEntry);
+    for (const key in obj) {
+        if (isArray(obj[key])) return true;
+    }
+    return false;
+};
 
 /**
- * Splits an array into chunks of a given size.
- * @param {Array} array - The array to split.
- * @param {number} size - The maximum size of each chunk.
- * @returns {Array[]} An array of chunks (sub-arrays).
+ * Checks if the provided value is an array.
+ *
+ * @param {*} val - The value to check.
+ * @returns {boolean}
  */
-const chunk = (array, size) => {
-  if (size <= 0) {
-    throw new Error('Size must be a positive number.');
-  }
-  const chunks = [];
-  for (let i = 0; i < array.length; i += size) {
-    chunks.push(array.slice(i, i + size));
-  }
-  return chunks;
-}
+const isArray = R.pipe(
+    Object.getPrototypeOf,
+    R.equals([])
+);
 
 /**
  * Remove all falsy values from an array.
@@ -68,16 +89,17 @@ const chunk = (array, size) => {
 const removeAllFalsy = (arr) => arr.filter(Boolean);
 
 /**
- * Check if a value is an array.
- * @param {any} val - The value to check.
- * @returns {boolean} - True if the value is an array, false otherwise.
+ * Returns a new array containing only the unique values from the input array.
+ * @param {Array} array - The array to filter for unique values.
+ * @returns {Array} A new array with duplicates removed.
  */
-const isArray = (val) => Array.isArray(val);
+const unique = (array) => Array.from(new Set(array));
 
-module.exports = {
-  diff,
-  unique,
+export {
   chunk,
+  diff,
+  hasArray,
+  isArray,
   removeAllFalsy,
-  isArray
+  unique,
 };

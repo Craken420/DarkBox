@@ -4,18 +4,20 @@
  * Use this file to access the entire library from a single import.
  */
 
-import * as arrays from './arrays/index.js';
-import * as objects from './objects/index.js';
-import * as strings from './strings/index.js';
-import * as files from './files/index.js';
-import * as folders from './folders/index.js';
-import * as encoding from './encoding/index.js';
+import * as arrays from './src/arrays/index.js';
+import * as encoding from './src/encoding/index.js';
+import * as files from './src/files/index.js';
+import * as folders from './src/folders/index.js';
+import * as objects from './src/objects/index.js';
+import * as regex from './src/regex/index.js';
+import * as strings from './src/strings/index.js';
 
 export const DarckBox = {
   arrays,
-  objects,
-  strings,
+  encoding,
   files,
   folders,
-  encoding
+  objects,
+  regex,
+  strings
 };

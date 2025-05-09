@@ -1,51 +1,81 @@
-import { describe, it, expect } from 'vitest'; // o de 'jest'
-import { encodeEntity, decodeEntity } from '../src/encoding/index.js';
+// __tests__/encoding.test.js
+
+import { describe, it, expect, vi } from 'vitest';
+import path from 'path';
+import fs from 'fs';
+import iconv from 'iconv-lite';
+import * as fnEncoding from '../src/encoding/index.js';
+
+// Setup archivo temporal para pruebas de archivo
+const TEST_FILE = path.join(process.cwd(), '__tests__', 'encoding-test.txt');
+const sampleText = '¡Hola mundo!';
+const sampleBase64 = Buffer.from(sampleText, 'utf-8').toString('base64');
+const sampleEntities = '&#161;&#72;&#111;&#108;&#97;&#32;&#109;&#117;&#110;&#100;&#111;&#33;';
 
 describe('Encoding Utilities', () => {
+  describe('base64Encode', () => {
+    it('should encode a string to Base64', () => {
+      const result = fnEncoding.base64Encode(sampleText);
+      expect(result).toBe(sampleBase64);
+    });
 
-  describe('Encode entity Utilities', () => {
-    it('should encode string into HTML entities', () => {
-      const input = "Hello";
-      const expected = "&#72;&#101;&#108;&#108;&#111;";
-      expect(encodeEntity(input)).toBe(expected);
+    it('should throw if input is not a string', () => {
+      expect(() => fnEncoding.base64Encode(123)).toThrow(TypeError);
     });
   });
 
-  describe('Encode entity Utilities', () => {
-    it('should decode HTML entities into string', () => {
-      const input = "&#72;&#101;&#108;&#108;&#111;";
-      const expected = "Hello";
-      expect(decodeEntity(input)).toBe(expected);
+  describe('base64Decode', () => {
+    it('should decode a Base64 string', () => {
+      const result = fnEncoding.base64Decode(sampleBase64);
+      expect(result).toBe(sampleText);
+    });
+
+    it('should throw if input is not a string', () => {
+      expect(() => fnEncoding.base64Decode(null)).toThrow(TypeError);
     });
   });
 
-  describe('Encode entity Utilities', () => {
-    it('should handle empty strings correctly', () => {
-      expect(encodeEntity("")).toBe("");
-      expect(decodeEntity("")).toBe("");
+  describe('encodeEntity', () => {
+    it('should encode a string into HTML numeric entities', () => {
+      const result = fnEncoding.encodeEntity(sampleText);
+      expect(result).toBe(sampleEntities);
     });
   });
 
-  describe('Encode entity Utilities', () => {
-    it('should handle special characters', () => {
-      const input = "¡Hi!";
-      const encoded = encodeEntity(input);
-      const decoded = decodeEntity(encoded);
-      expect(decoded).toBe(input);
+  describe('decodeEntity', () => {
+    it('should decode HTML numeric entities into a plain string', () => {
+      const result = fnEncoding.decodeEntity(sampleEntities);
+      expect(result).toBe(sampleText);
     });
   });
 
-  describe('Encode entity Utilities', () => {
-    it('base64Encode and base64Decode should be inverses', () => {
-      const text = 'Test123';
-      const encoded = encoding.base64Encode(text);
-      expect(encoding.base64Decode(encoded)).toBe(text);
+  describe('detectFileEncoding', () => {
+    it('should detect encoding of a file', async () => {
+      fs.writeFileSync(TEST_FILE, sampleText, 'utf-8');
+      const encoding = fnEncoding.detectFileEncoding(TEST_FILE);
+      expect(typeof encoding).toBe('string');
     });
   });
 
-  describe('Encode entity Utilities', () => {
-    it('base64Encode should correctly encode a string', () => {
-      expect(encoding.base64Encode('Hello')).toBe(Buffer.from('Hello').toString('base64'));
+  describe('readFileWithEncoding', () => {
+    it('should read file using specified encoding', () => {
+      fs.writeFileSync(TEST_FILE, sampleText, 'utf-8');
+      const result = fnEncoding.readFileWithEncoding(TEST_FILE, 'utf-8');
+      expect(result).toBe(sampleText);
     });
+  });
+
+  describe('readFileWithDetectedEncoding', () => {
+    it('should read file using detected encoding', () => {
+      fs.writeFileSync(TEST_FILE, sampleText, 'utf-8');
+      const result = fnEncoding.readFileWithDetectedEncoding(TEST_FILE);
+      expect(result).toBe(sampleText);
+    });
+  });
+
+  afterAll(() => {
+    try {
+      fs.unlinkSync(TEST_FILE);
+    } catch (err) {}
   });
 });

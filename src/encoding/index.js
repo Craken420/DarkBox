@@ -1,9 +1,53 @@
 /**
+ * @file encoding/index.js
  * @fileoverview Data encoding and decoding utilities.
  * Supports transformations such as Base64, UTF-8, hexadecimal, and other formats.
  * 
  * @module encoding
  */
+
+import chardet from 'chardet';
+
+/**
+ * Decodes a Base64 encoded string.
+ * @param {string} b64 - The Base64 string to decode.
+ * @returns {string} The decoded string.
+ */
+const base64Decode = (b64) => {
+  if (typeof b64 !== 'string') {
+    throw new TypeError('Expected a Base64 string');
+  }
+  return Buffer.from(b64, 'base64').toString('utf-8');
+}
+
+/**
+ * Encodes a string to Base64.
+ * @param {string} str - The input string to encode.
+ * @returns {string} The Base64 encoded string.
+ */
+const base64Encode = (str) => {
+  if (typeof str !== 'string') {
+    throw new TypeError('Expected a string');
+  }
+  return Buffer.from(str, 'utf-8').toString('base64');
+}
+
+/**
+ * Decodes a string containing HTML numeric entities into plain text.
+ * Example: "&#65;&#66;&#67;" → "ABC"
+ * 
+ * @param {string} str - The encoded entity string to decode.
+ * @returns {string} The decoded plain text string.
+ */
+const decodeEntity = (str) => str.replace(/&#(\d+);/g, (_, code) => String.fromCharCode(code));
+
+/**
+ * Detects the character encoding of a file.
+ *
+ * @param {string} filePath - Path to the file.
+ * @returns {string} - Detected encoding.
+ */
+const detectFileEncoding = (filePath) => chardet.detectFileSync(filePath);
 
 /**
  * Encodes a string into its HTML entity representation.
@@ -19,25 +63,6 @@ const encodeEntity = (str) => {
     }
     return result.join('');
 }
-
-/**
- * Decodes a string containing HTML numeric entities into plain text.
- * Example: "&#65;&#66;&#67;" → "ABC"
- * 
- * @param {string} str - The encoded entity string to decode.
- * @returns {string} The decoded plain text string.
- */
-const decodeEntity = (str) => {
-    return str.replace(/&#(\d+);/g, (_, code) => String.fromCharCode(code));
-}
-
-/**
- * Detects the character encoding of a file.
- *
- * @param {string} filePath - Path to the file.
- * @returns {string} - Detected encoding.
- */
-const detectFileEncoding = (filePath) => chardet.detectFileSync(filePath);
 
 /**
  * Reads a file and returns its content using the detected encoding.
@@ -59,36 +84,12 @@ const readFileWithDetectedEncoding = (filePath) => {
  */
 const readFileWithEncoding = (filePath, targetEncoding) => iconv.decode(fs.readFileSync(filePath), targetEncoding);
 
-/**
- * Encodes a string to Base64.
- * @param {string} str - The input string to encode.
- * @returns {string} The Base64 encoded string.
- */
-const base64Encode = (str) => {
-    if (typeof str !== 'string') {
-      throw new TypeError('Expected a string');
-    }
-    return Buffer.from(str, 'utf-8').toString('base64');
-}
-  
-  /**
-   * Decodes a Base64 encoded string.
-   * @param {string} b64 - The Base64 string to decode.
-   * @returns {string} The decoded string.
-   */
-const base64Decode = (b64) => {
-    if (typeof b64 !== 'string') {
-      throw new TypeError('Expected a Base64 string');
-    }
-    return Buffer.from(b64, 'base64').toString('utf-8');
-}
-
-module.exports = {
-    encodeEntity,
-    decodeEntity,
-    detectFileEncoding,
-    readFileWithDetectedEncoding,
-    readFileWithEncoding,
-    base64Encode,
-    base64Decode
+export {
+  base64Decode,
+  base64Encode,
+  decodeEntity,
+  detectFileEncoding,
+  encodeEntity,
+  readFileWithDetectedEncoding,
+  readFileWithEncoding
 };
