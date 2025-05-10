@@ -1,15 +1,16 @@
-import fs from 'fs';
-import path from 'path';
-import * as files from './index';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as files from '../src/files/index';
+import { vi } from 'vitest';
 
-jest.mock('fs');
-jest.mock('path');
+vi.mock('fs');
+vi.mock('path');
 
 // Aquí definimos algunos mocks para pruebas
 const mockFile = path.resolve('test.txt');
 
 beforeEach(() => {
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 });
 
 describe('File Utilities', () => {

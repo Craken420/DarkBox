@@ -9,7 +9,7 @@
 
 import * as R from 'ramda';
 import * as patt from './patterns.js';
-import { add } from './add.js';
+import * as add from './add.js';
 
 const iniFile = {
     /**
@@ -69,42 +69,6 @@ const path = {
     removeRootFromPath: txt => txt.replace(patt.file.pathRoot, '')
 }
 
-const rdp = {
-    /**
-     * Cleans and normalizes RDP text using a functional pipeline.
-     * Removes ANSI settings, NOLOCK hints, comments, tabs, and extra spacing.
-     * Converts the result to lowercase.
-     * @param {string} txt - Raw RDP configuration text.
-     * @returns {string} Cleaned and normalized text.
-     */
-    cleanText: R.pipe(
-        sql.removeAnsiControlChars,
-        sql.removeWithNoClauses,
-        sql.removeMultilineCommentsRecursively,
-        sql.removeLineComments,
-        txt.removeTabs,
-        txt.trimEachLine,
-        txt.normalizeSpacesInLines,
-        txt.removeEmptyLines,
-        add.cmpEnterInHead,
-        R.toLower
-    ),
-
-    /**
-     * Removes any text after a defined abbreviation suffix in an object line.
-     * @param {string} txt - The object text with abbreviation suffix.
-     * @returns {string} The cleaned object text.
-     */
-    removeAfterAbbreviationInObj: txt => txt.replace(patt.rdp.postAbbreviationSuffix, ''),
-
-    /**
-     * Removes -specific comparisons that appear outside any header.
-     * @param {string} txt - Text containing  INI configuration.
-     * @returns {string} Cleaned text.
-     */
-    removeHeaderlessComparisons: txt => txt.replace(patt.iniFile.keysWithoutHeader, '')
-}
-
 const sql = {
     /**
      * Removes ANSI control settings from SQL scripts.
@@ -141,6 +105,7 @@ const sql = {
      */
     removeWithNoClauses: R.replace(patt.sql.detectNoLockHints, ' ')
 }
+
 
 const txt = {
     /**
@@ -191,7 +156,43 @@ const txt = {
     )
 }
 
-module.exports = {
+const rdp = {
+    /**
+     * Cleans and normalizes RDP text using a functional pipeline.
+     * Removes ANSI settings, NOLOCK hints, comments, tabs, and extra spacing.
+     * Converts the result to lowercase.
+     * @param {string} txt - Raw RDP configuration text.
+     * @returns {string} Cleaned and normalized text.
+     */
+    cleanText: R.pipe(
+        sql.removeAnsiControlChars,
+        sql.removeWithNoClauses,
+        sql.removeMultilineCommentsRecursively,
+        sql.removeLineComments,
+        txt.removeTabs,
+        txt.trimEachLine,
+        txt.normalizeSpacesInLines,
+        txt.removeEmptyLines,
+        add.cmpEnterInHead,
+        R.toLower
+    ),
+
+    /**
+     * Removes any text after a defined abbreviation suffix in an object line.
+     * @param {string} txt - The object text with abbreviation suffix.
+     * @returns {string} The cleaned object text.
+     */
+    removeAfterAbbreviationInObj: txt => txt.replace(patt.rdp.postAbbreviationSuffix, ''),
+
+    /**
+     * Removes -specific comparisons that appear outside any header.
+     * @param {string} txt - Text containing  INI configuration.
+     * @returns {string} Cleaned text.
+     */
+    removeHeaderlessComparisons: txt => txt.replace(patt.iniFile.keysWithoutHeader, '')
+}
+
+export {
     iniFile,
     path,
     rdp,

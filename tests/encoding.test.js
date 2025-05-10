@@ -2,12 +2,11 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import path from 'path';
-import fs from 'fs';
-import iconv from 'iconv-lite';
+import * as fs from 'fs';
 import * as fnEncoding from '../src/encoding/index.js';
 
 // Setup archivo temporal para pruebas de archivo
-const TEST_FILE = path.join(process.cwd(), '__tests__', 'encoding-test.txt');
+const TEST_FILE = path.join(process.cwd(), 'tests/__tests__', 'encoding-test.txt');
 const sampleText = '¡Hola mundo!';
 const sampleBase64 = Buffer.from(sampleText, 'utf-8').toString('base64');
 const sampleEntities = '&#161;&#72;&#111;&#108;&#97;&#32;&#109;&#117;&#110;&#100;&#111;&#33;';

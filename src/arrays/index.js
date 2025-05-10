@@ -57,20 +57,6 @@ const diff = (arr1, arr2) => {
 }
 
 /**
- * Checks whether an object contains at least one array.
- *
- * @param {Object} objEntry - The object to inspect.
- * @returns {boolean}
- */
-const hasArray = objEntry => {
-    let obj = R.clone(objEntry);
-    for (const key in obj) {
-        if (isArray(obj[key])) return true;
-    }
-    return false;
-};
-
-/**
  * Checks if the provided value is an array.
  *
  * @param {*} val - The value to check.
@@ -98,7 +84,6 @@ const unique = (array) => Array.from(new Set(array));
 export {
   chunk,
   diff,
-  hasArray,
   isArray,
   removeAllFalsy,
   unique,

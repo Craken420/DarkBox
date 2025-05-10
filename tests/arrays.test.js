@@ -6,7 +6,7 @@ import {
   isArray,
   removeAllFalsy,
   unique,
-} from '../src/array/index.js';
+} from '../src/arrays/index';
 
 describe('Array Utilities', () => {
   describe('chunk', () => {

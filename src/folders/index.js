@@ -5,7 +5,8 @@
  *
  * @module folders
  */
-import { promises as fs } from 'fs';
+import * as R from 'ramda';
+import * as fs from 'fs';
 import path from 'path';
 
 /**
@@ -14,6 +15,13 @@ import path from 'path';
  * @returns {Promise<void>} A promise that resolves when the directory exists.
  */
 const createFolder = async(dirPath) => await fs.mkdir(dirPath, { recursive: true });
+
+/**
+ * Checks if the given path is a directory.
+ * @param {string} directoryPath - The path to check.
+ * @returns {boolean} True if the path is a directory, false otherwise.
+ */
+const isDirectory = (directoryPath) => fs.statSync(directoryPath).isDirectory();
 
 /**
  * Checks if the path exists and is a directory.
@@ -66,13 +74,6 @@ const getFilteredFilesExcluding = R.curry((directory, extensions, namesToOmit) =
   const files = getFilteredFiles(extensions, directory);
   return R.without(namesToOmit, files);
 });
-
-/**
- * Checks if the given path is a directory.
- * @param {string} directoryPath - The path to check.
- * @returns {boolean} True if the path is a directory, false otherwise.
- */
-const isDirectory = (directoryPath) => fs.statSync(directoryPath).isDirectory();
 
 /**
  * Lists the files (not directories) within a directory.

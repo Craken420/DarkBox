@@ -16,7 +16,7 @@
  * @module regex.match
  */
 import * as R from 'ramda';;
-import patt from './patterns.js';
+import * as patt from './patterns.js';
 
 /**
  * Searches for and returns a full INI section by exact name.

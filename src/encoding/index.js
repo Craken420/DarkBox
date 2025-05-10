@@ -6,7 +6,9 @@
  * @module encoding
  */
 
-import chardet from 'chardet';
+import * as chardet from 'chardet';
+import * as iconv from 'iconv-lite';
+import * as fs from 'fs';
 
 /**
  * Decodes a Base64 encoded string.

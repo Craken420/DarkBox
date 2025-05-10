@@ -5,6 +5,8 @@
  * 
  * @module files
  */
+import * as R from 'ramda';
+import * as fs from 'fs';
 
 /**
  * Creates an empty file if it does not exist.
@@ -33,6 +35,13 @@ const deleteIfEmpty = file => {
   }
   return false
 }
+
+/**
+ * Checks if a path points to a file.
+ * @param {string} file - Path to check.
+ * @returns {boolean}
+ */
+const isFile = file => fs.statSync(file).isFile()
 
 /**
  * Checks if a file exists and is a file.
@@ -67,13 +76,6 @@ const getFilteredFilesInDir = R.curry((extensions, dir) =>
  * @returns {string[]}
  */
 const getPathsInDir = dir => fs.readdirSync(dir).map(x => path.resolve(dir, x))
-
-/**
- * Checks if a path points to a file.
- * @param {string} file - Path to check.
- * @returns {boolean}
- */
-const isFile = file => fs.statSync(file).isFile()
 
 /**
  * Reads the contents of a text file asynchronously.
